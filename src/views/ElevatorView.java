@@ -30,6 +30,7 @@ public class ElevatorView {
 
 	public void openDoors()
 	{
+		System.out.println("asdsaadasdasdasdaad");
 		//left door opens animation
 		final Timeline leftDoorTimeline = new Timeline();
 		leftDoorTimeline.setCycleCount(1);

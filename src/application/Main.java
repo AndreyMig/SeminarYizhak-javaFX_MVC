@@ -3,6 +3,8 @@ package application;
 import java.io.File;
 import java.io.FileInputStream;
 
+import controllers.ElevatorController;
+import model.ElevatorModel;
 import views.ElevatorView;
 import views.MainView;
 import javafx.application.Application;
@@ -21,8 +23,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
-		MainView m = new MainView(primaryStage);
-		
+		MainView mainView = new MainView(primaryStage);
+		ElevatorModel elevatorModel = new ElevatorModel();
+		ElevatorController ec = new ElevatorController(mainView, elevatorModel);
 		
 	}
 

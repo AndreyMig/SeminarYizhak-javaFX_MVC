@@ -5,7 +5,7 @@ public interface ModelListener {
 	
 	
 	 
-	public void floorChanged(int floorNum);
+	public void floorChanged(int oldFloor, int newFloor);
 	
 	
 	
