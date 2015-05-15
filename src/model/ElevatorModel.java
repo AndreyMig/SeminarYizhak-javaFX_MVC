@@ -2,9 +2,8 @@ package model;
 
 public class ElevatorModel {
 
-	
-	
-	
+
+
 	int currentFloor;
 	
 	

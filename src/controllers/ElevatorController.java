@@ -3,7 +3,7 @@ package controllers;
 import model.ElevatorModel;
 import views.MainView;
 
-public class ElevatorController implements ViewListener{
+public class ElevatorController implements ViewListener, ModelListener{
 
 	
 	private MainView mainView;
@@ -21,6 +21,13 @@ public class ElevatorController implements ViewListener{
 
 	@Override
 	public void changeFloor(int floorNum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void floorChanged(int floorNum) {
 		// TODO Auto-generated method stub
 		
 	}
