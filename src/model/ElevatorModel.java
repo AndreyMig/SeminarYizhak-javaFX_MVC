@@ -1,27 +1,36 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.MapProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import controllers.ModelListener;
 
 public class ElevatorModel {
 
 
+	public static String[] imageFileNames = {"defaultElevator.png", "elevator-bg"};
 
-//	ArrayList<Integer> floors = new ArrayList<Integer>();
-	
 	
 	
 	private int currentFloor;
-	private int newFloor;
-	ArrayList<ModelListener> modelListeners = new ArrayList<ModelListener>();
+	private int DestinationFloor;
+	
+//	private ArrayList<Integer> destFloors = new ArrayList<Integer>();
+	private ArrayList<ModelListener> modelListeners;
+	private String imageFile = "defaultElevator.png";
 	
 	
 	
 	
 	public ElevatorModel() {
+		modelListeners = new ArrayList<ModelListener>();
 		this.currentFloor = 1;
-		this.newFloor = -1;
+		this.DestinationFloor = -1;
 	}
 
 		public void registerListener(ModelListener listener){
@@ -37,7 +46,7 @@ public class ElevatorModel {
 		if(newFloor - currentFloor == 0)
 			return;
 		
-		this.newFloor = newFloor;
+		this.DestinationFloor = newFloor;
 		
 		fireFloorChangedEvent(this.currentFloor, newFloor);
 		this.currentFloor = newFloor;
@@ -45,7 +54,7 @@ public class ElevatorModel {
 	
 	public void floorChanged()
 	{
-		this.currentFloor = newFloor;
+		this.currentFloor = DestinationFloor;
 	}
 
 
@@ -61,9 +70,24 @@ public class ElevatorModel {
 		
 	}
 
+	public String getImageFile() {
+		return imageFile;
+	}
+
+	public void setImageFile(String imageFile) {
+		this.imageFile = imageFile;
+	}
+
+	public int getCurrentFloor() {
+		return currentFloor;
+	}
+
+	public void setCurrentFloor(int currentFloor) {
+		this.currentFloor = currentFloor;
+	}
 
 
-	
+
 	
 	
 	

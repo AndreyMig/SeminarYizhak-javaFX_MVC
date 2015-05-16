@@ -51,10 +51,11 @@ public class MainView {
 //	private final String BUILDING_IMAGE = "building2.png";
 	private final String MAIN_GRID_ID = "#mainGrid";
 	private final String ELEVATOR_PANE_ID = "#elevatorPane";
+	private final String FXML_FILE_NAME = "momo.fxml";
 
-	Map<Integer, ToggleButton> toggleButtonsLeft;
-	Map<Integer, ToggleButton> toggleButtonsRight;
-	
+	private Map<Integer, ToggleButton> toggleButtonsLeft;
+	private Map<Integer, ToggleButton> toggleButtonsRight;
+	private Timeline elevatorTimeline;
 	private final int SCENE_WIDTH = 800;
 	
 	private final int SCENE_HEIGHT= 1000;
@@ -68,23 +69,24 @@ public class MainView {
 	
 	public MainView(Stage stage)
 	{
-		
+		//initilize array and hashmaps
 		listeners = new ArrayList<ViewListener>();
 		toggleButtonsLeft = new HashMap<Integer, ToggleButton>();
 		toggleButtonsRight= new HashMap<Integer, ToggleButton>();
-		createScene( stage);
+		
+		
 		
 	}
 
 
-	private void createScene(Stage stage){
+	public void createScene(Stage stage){
 
 			FXMLLoader fxmlRoot = new FXMLLoader();
 
 			Parent root = null;
 			try {
 				root = (Parent) fxmlRoot.load(new FileInputStream(new File(
-						"momo.fxml")));
+						FXML_FILE_NAME)));
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
@@ -100,14 +102,7 @@ public class MainView {
 			Pane labelPane = (Pane) scene.lookup("#labelPane");
 			Label statusLabel = (Label) scene.lookup("#statusLabel");
 			statusLabel.layoutXProperty().bind(stage.widthProperty().divide(2));
-//			statusLabel.scaleYProperty().bind(labelPane.heightProperty().divide(60));
-//			
-//			statusLabel.scaleXProperty().bind(labelPane.widthProperty().divide(60));
-//			Font f = new Font((Double.MAX_VALUE));
-//			
-//			f.
-//			statusLabel.setFont(f);
-//			statusLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
 			
 			
 			
@@ -115,13 +110,7 @@ public class MainView {
 			int floorCounter = NUM_OF_FLOORS;
 			for (int i = 1; i < NUM_OF_FLOORS+1; i++) {
 				
-//				Rectangle r= new Rectangle();
-//				r.widthProperty().bind(p.widthProperty());
-//				r.heightProperty().bind(p.heightProperty());
-//				Color c = i%2==0 ? Color.BLACK : Color.WHITESMOKE;   
-//				r.setFill(c);
-//				pane.add(r, 1, i);
-				
+
 				ToggleButton t = new ToggleButton("F"+floorCounter);
 				t.setId(""+floorCounter);
 				toggleButtonsLeft.put(floorCounter, t);
@@ -136,8 +125,9 @@ public class MainView {
 				aToggleButton = t;
 			}
 			
-			Image elevatorImage = new Image(ELEVATOR_INTERIOR_IMAGE);
-			elevatorImageView = new ImageView(elevatorImage);
+			String elevatorFileName = fireGetElevatorFileNameEvent();
+			
+			setElevatorImage(elevatorFileName);
 			GridPane.setHalignment(elevatorImageView, HPos.CENTER);
 			elevatorImageView.fitWidthProperty().bind(elevatorPane.widthProperty().divide(12));
 			elevatorImageView.fitHeightProperty().bind(aToggleButton.heightProperty());
@@ -169,6 +159,12 @@ public class MainView {
 	}
 	
 	
+	private String fireGetElevatorFileNameEvent() {
+		
+		return listeners.get(0).getElevatorFileName();
+	}
+
+
 	private void setElevatorButtonListener(ToggleButton t, boolean b) {
 			
 		t.setOnAction(new EventHandler<ActionEvent>() {
@@ -176,6 +172,15 @@ public class MainView {
 			@Override
 			public void handle(ActionEvent event) {
 				System.err.println(t.getId()+" Clicked");
+				if(elevatorImageView.yProperty().doubleValue() == toggleButtonsLeft.get(Integer.parseInt(t.getId())).getLayoutY()
+						-toggleButtonsLeft.get(Integer.parseInt(t.getId())).getHeight())
+				{
+					System.out.println("Blagan");
+					t.setSelected(false);
+					return;
+				}
+					
+//				t.setDisable(true);
 				fireUpChangeFloorEvent(Integer.parseInt(t.getId()));				
 			}
 			
@@ -198,32 +203,35 @@ public class MainView {
 	public void changeElevatorFloor(int oldFloor, int newFloor)
 	{
 		int abdDiff = Math.abs(newFloor-oldFloor);
+		if(elevatorTimeline != null)
+			elevatorTimeline.stop();	
 		
-		System.out.println(newFloor);
-		System.out.println(oldFloor);
+		System.out.println("new floor "+newFloor);
+		System.out.println("old floor "+oldFloor);
 		
-		int upDown = newFloor-oldFloor > 0 ? -1 : 1; 
+//		int upDown = newFloor-oldFloor > 0 ? -1 : 1; 
 		
 		System.out.println("new floor number = "+newFloor);
 		//elevatorImageView.yProperty().unbind();
-		final Timeline leftDoorTimeline = new Timeline();
-		leftDoorTimeline.setCycleCount(1);
-		leftDoorTimeline.setAutoReverse(true);
+		elevatorTimeline = new Timeline();
+		elevatorTimeline.setCycleCount(1);
+		elevatorTimeline.setAutoReverse(true);
 		
-		System.out.println("elevator = "+elevatorImageView.yProperty().doubleValue());
-		System.out.println("button = "+toggleButtonsLeft.get(newFloor-1).getLayoutY());
-		System.out.println("location = "+(toggleButtonsLeft.get(newFloor+upDown).getLayoutY()
-				 + toggleButtonsLeft.get(newFloor-1).getHeight()));
+		//System.out.println("elevator = "+elevatorImageView.yProperty().doubleValue());
+		//System.out.println("button = "+toggleButtonsLeft.get(newFloor).getLayoutY());
+		//System.out.println("location = "+(toggleButtonsLeft.get(newFloor).getLayoutY()
+		//		 + toggleButtonsLeft.get(newFloor).getHeight()));
+		
 		final KeyValue leftDoorKv = new KeyValue(elevatorImageView.yProperty(),(toggleButtonsLeft.get(newFloor).getLayoutY()
-				 - toggleButtonsLeft.get(newFloor-1).getHeight()));
+				 - toggleButtonsLeft.get(newFloor).getHeight()));
 		
 		//When animation is finished rebind element y property
 		 EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
 
 	        public void handle(ActionEvent t) {
 
-	        	toggleButtonsLeft.get(newFloor).setLayoutY(toggleButtonsLeft.get(newFloor-1).getLayoutY()
-				 + toggleButtonsLeft.get(newFloor-1).getHeight());
+	        	toggleButtonsLeft.get(newFloor).setLayoutY(toggleButtonsLeft.get(newFloor).getLayoutY()
+				 + toggleButtonsLeft.get(newFloor).getHeight());
 	        	toggleButtonsLeft.get(newFloor).setSelected(false);
 	        	//elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty());
 	        }
@@ -232,13 +240,13 @@ public class MainView {
 		
 		
 		final KeyFrame leftDoorKf = new KeyFrame(Duration.millis(500*abdDiff), onFinished, leftDoorKv);
-		leftDoorTimeline.getKeyFrames().add(leftDoorKf);
+		elevatorTimeline.getKeyFrames().add(leftDoorKf);
 		
 		
 		
 		
 		
-		leftDoorTimeline.play();
+		elevatorTimeline.play();
 		
 	}
 	
@@ -249,6 +257,13 @@ public class MainView {
 		for (ViewListener l : listeners) {
 			l.changeFloor(floorNum);
 		}
+		
+	}
+
+
+	public void setElevatorImage(String newFileName) {
+		Image elevatorImage = new Image(newFileName);
+		elevatorImageView = new ImageView(elevatorImage);
 		
 	}
 	
