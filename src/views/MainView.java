@@ -56,15 +56,15 @@ public class MainView {
 	private Map<Integer, ToggleButton> toggleButtonsLeft;
 	private Map<Integer, ToggleButton> toggleButtonsRight;
 	private Timeline elevatorTimeline;
-	private final int SCENE_WIDTH = 800;
+	private final int SCENE_WIDTH = 600;
 	
-	private final int SCENE_HEIGHT= 1000;
+	private final int SCENE_HEIGHT= 700;
 	private final int NUM_OF_FLOORS= 8;
 	private ToggleButton aToggleButton;
 	private ImageView elevatorImageView;
 //	private final String ELEVATOR_INTERIOR_IMAGE = "elev2.png";
 	private final String ELEVATOR_INTERIOR_IMAGE = "elevator-bg.png";
-	
+	private Stage stage;
 	//private static final String buildingImage = MainView.class.getResource("images//building.png").toString();
 	
 	public MainView(Stage stage)
@@ -73,7 +73,7 @@ public class MainView {
 		listeners = new ArrayList<ViewListener>();
 		toggleButtonsLeft = new HashMap<Integer, ToggleButton>();
 		toggleButtonsRight= new HashMap<Integer, ToggleButton>();
-		
+		this.stage = stage;
 		
 		
 	}
@@ -100,6 +100,7 @@ public class MainView {
 			GridPane gridPane = (GridPane) scene.lookup(MAIN_GRID_ID);
 			Pane elevatorPane = (Pane) scene.lookup(ELEVATOR_PANE_ID);
 			Pane labelPane = (Pane) scene.lookup("#labelPane");
+//			System.out.println("labelPane = " +labelPane.);
 			Label statusLabel = (Label) scene.lookup("#statusLabel");
 			statusLabel.layoutXProperty().bind(stage.widthProperty().divide(2));
 
@@ -143,7 +144,7 @@ public class MainView {
 //			elevatorImageView.setLayoutY(toggleButtonsLeft.get(2).getLayoutY());
 			elevatorImageView.yProperty().set(toggleButtonsLeft.get(2).getLayoutY());;
 			System.out.println(elevatorImageView.yProperty());
-//			elevatorImageView.yProperty().bind(toggleButtonsLeft.get(2).layoutYProperty());
+			elevatorImageView.yProperty().bind(toggleButtonsLeft.get(2).layoutYProperty());
 			
 
 			
@@ -212,7 +213,8 @@ public class MainView {
 //		int upDown = newFloor-oldFloor > 0 ? -1 : 1; 
 		
 		System.out.println("new floor number = "+newFloor);
-		//elevatorImageView.yProperty().unbind();
+		elevatorImageView.yProperty().unbind();
+		stage.setResizable(false);
 		elevatorTimeline = new Timeline();
 		elevatorTimeline.setCycleCount(1);
 		elevatorTimeline.setAutoReverse(true);
@@ -228,12 +230,17 @@ public class MainView {
 		//When animation is finished rebind element y property
 		 EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
 
-	        public void handle(ActionEvent t) {
+	        
+
+			public void handle(ActionEvent t) {
 
 	        	toggleButtonsLeft.get(newFloor).setLayoutY(toggleButtonsLeft.get(newFloor).getLayoutY()
 				 + toggleButtonsLeft.get(newFloor).getHeight());
 	        	toggleButtonsLeft.get(newFloor).setSelected(false);
-	        	//elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty());
+	        	stage.setResizable(true);
+	        	System.out.println(newFloor);
+	        	elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty()
+	        			.subtract(toggleButtonsLeft.get(newFloor).heightProperty()));
 	        }
 	        
 	    };
