@@ -214,7 +214,7 @@ public class MainView {
 		
 		System.out.println("new floor number = "+newFloor);
 		elevatorImageView.yProperty().unbind();
-		stage.setResizable(false);
+		//stage.setResizable(false);
 		elevatorTimeline = new Timeline();
 		elevatorTimeline.setCycleCount(1);
 		elevatorTimeline.setAutoReverse(true);
@@ -237,7 +237,7 @@ public class MainView {
 	        	toggleButtonsLeft.get(newFloor).setLayoutY(toggleButtonsLeft.get(newFloor).getLayoutY()
 				 + toggleButtonsLeft.get(newFloor).getHeight());
 	        	toggleButtonsLeft.get(newFloor).setSelected(false);
-	        	stage.setResizable(true);
+	        	//stage.setResizable(true);
 	        	System.out.println(newFloor);
 	        	elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty()
 	        			.subtract(toggleButtonsLeft.get(newFloor).heightProperty()));
