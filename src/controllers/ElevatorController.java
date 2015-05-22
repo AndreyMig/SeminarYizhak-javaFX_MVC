@@ -1,32 +1,36 @@
 package controllers;
 
 import model.ElevatorModel;
-import views.MainView;
+import views.MainElevatorView;
 import views.SummaryView;
 
 public class ElevatorController implements ViewListener, ModelListener{
 
 	
-	private MainView mainView;
+	private MainElevatorView mainView;
 	private ElevatorModel elevatorModel;
 	private SummaryView summaryView;
 	
-	public ElevatorController(MainView mainView, SummaryView summaryView, ElevatorModel elevatorModel) {
+	public ElevatorController(MainElevatorView mainView, SummaryView summaryView, ElevatorModel elevatorModel) {
 		
 		this.mainView = mainView;
 		this.elevatorModel = elevatorModel;
 		this.summaryView = summaryView;
 		this.mainView.registerListener(this);
 		this.elevatorModel.registerListener(this);
-		
-		
+
 	}
 
 
+//	@Override
+//	public void changeFloor(int newFloor) {
+//		this.elevatorModel.changeFloor(newFloor);
+//	}
+
 	@Override
-	public void changeFloor(int newFloor) {
-		this.elevatorModel.changeFloor(newFloor);
-		System.err.println("xxxxxxxxx");
+	public void addFloor(int floorNum) {
+		elevatorModel.addFloor(floorNum);
+		
 	}
 
 
@@ -49,6 +53,21 @@ public class ElevatorController implements ViewListener, ModelListener{
 		return this.elevatorModel.getImageFile();
 	}
 
+
+	@Override
+	public int getNumOfFloors() {
+		return this.elevatorModel.getNumOfFloors();
+	}
+
+
+	@Override
+	public void floorChanged(int floorNum) {
+		this.elevatorModel.floorChanged(newFloor);
+		
+	}
+
+
+	
 	
 	
 	

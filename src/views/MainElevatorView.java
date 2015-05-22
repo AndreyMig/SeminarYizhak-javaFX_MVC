@@ -32,8 +32,12 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -41,7 +45,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class MainView {
+public class MainElevatorView {
 
 	
 	
@@ -51,28 +55,28 @@ public class MainView {
 //	private final String BUILDING_IMAGE = "building2.png";
 	private final String MAIN_GRID_ID = "#mainGrid";
 	private final String ELEVATOR_PANE_ID = "#elevatorPane";
-	private final String FXML_FILE_NAME = "momo.fxml";
+	private final String FXML_FILE_NAME = "elevatorGrid.fxml";
 
 	private Map<Integer, ToggleButton> toggleButtonsLeft;
-	private Map<Integer, ToggleButton> toggleButtonsRight;
+//	private Map<Integer, ToggleButton> toggleButtonsRight;
 	private Timeline elevatorTimeline;
 	private final int SCENE_WIDTH = 600;
-	
+	private double location;
 	private final int SCENE_HEIGHT= 700;
 	private final int NUM_OF_FLOORS= 8;
 	private ToggleButton aToggleButton;
 	private ImageView elevatorImageView;
 //	private final String ELEVATOR_INTERIOR_IMAGE = "elev2.png";
-	private final String ELEVATOR_INTERIOR_IMAGE = "elevator-bg.png";
+//	private final String ELEVATOR_INTERIOR_IMAGE = "elevator-bg.png";
 	private Stage stage;
 	//private static final String buildingImage = MainView.class.getResource("images//building.png").toString();
 	
-	public MainView(Stage stage)
+	public MainElevatorView(Stage stage)
 	{
 		//initilize array and hashmaps
 		listeners = new ArrayList<ViewListener>();
 		toggleButtonsLeft = new HashMap<Integer, ToggleButton>();
-		toggleButtonsRight= new HashMap<Integer, ToggleButton>();
+//		toggleButtonsRight= new HashMap<Integer, ToggleButton>();
 		this.stage = stage;
 		
 		
@@ -99,17 +103,24 @@ public class MainView {
 //			TitledPane tPane = (TitledPane) scene.lookup("#TitledPane")
 			GridPane gridPane = (GridPane) scene.lookup(MAIN_GRID_ID);
 			Pane elevatorPane = (Pane) scene.lookup(ELEVATOR_PANE_ID);
-			Pane labelPane = (Pane) scene.lookup("#labelPane");
+//			gridPane.setBackground(Background.);
+//			ColumnConstraints col1 = new ColumnConstraints();
+//		    col1.setPercentWidth(25);
+//		    ColumnConstraints col2 = new ColumnConstraints();
+//		    col2.setPercentWidth(75);
+//		    gridPane.getColumnConstraints().addAll(col1);
+		    
+		//	Pane labelPane = (Pane) scene.lookup("#labelPane");
 //			System.out.println("labelPane = " +labelPane.);
-			Label statusLabel = (Label) scene.lookup("#statusLabel");
-			statusLabel.layoutXProperty().bind(stage.widthProperty().divide(2));
+			//Label statusLabel = (Label) scene.lookup("#statusLabel");
+			//statusLabel.layoutXProperty().bind(stage.widthProperty().divide(2));
 
 			
 			
+			int numOfFloors = fireGetNumOfFloor();
 			
-			
-			int floorCounter = NUM_OF_FLOORS;
-			for (int i = 1; i < NUM_OF_FLOORS+1; i++) {
+			int floorCounter = numOfFloors;
+			for (int i = 0; i < numOfFloors; i++) {
 				
 
 				ToggleButton t = new ToggleButton("F"+floorCounter);
@@ -117,12 +128,25 @@ public class MainView {
 				toggleButtonsLeft.put(floorCounter, t);
 				setElevatorButtonListener(t, true);
 				t.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-				ToggleButton t2 = new ToggleButton("F"+floorCounter);
+//				t.prefWidthProperty().bind(stage.widthProperty().divide(50));;
+				//ToggleButton t2 = new ToggleButton("F"+floorCounter);
 				setElevatorButtonListener(t, false);
 				floorCounter--;
-				t2.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			//	t2.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+				
+				if(i > 7){
+					RowConstraints rc = new RowConstraints();
+					rc.setVgrow(Priority.SOMETIMES);
+					rc.setPrefHeight(30.0);
+					rc.setMinHeight(10.0);
+					gridPane.getRowConstraints().add(rc);
+//					gridPane.setRowSpan(elevatorPane, ++numOfFloors);
+				}
+				
+				
 				gridPane.add(t, 0, i);
-				gridPane.add(t2, 2, i);
+				
+				//gridPane.add(t2, 2, i);
 				aToggleButton = t;
 			}
 			
@@ -135,18 +159,38 @@ public class MainView {
 			stage.setScene(scene);
 			stage.show();
 			
-			System.out.println(labelPane.widthProperty());
+			//System.out.println(labelPane.widthProperty());
 			
 			
 			
 
 			elevatorImageView.xProperty().bind(elevatorPane.widthProperty().divide(2.17));
 //			elevatorImageView.setLayoutY(toggleButtonsLeft.get(2).getLayoutY());
-			elevatorImageView.yProperty().set(toggleButtonsLeft.get(2).getLayoutY());;
+			elevatorImageView.yProperty().set(toggleButtonsLeft.get(1).getLayoutY());;
 			System.out.println(elevatorImageView.yProperty());
-			elevatorImageView.yProperty().bind(toggleButtonsLeft.get(2).layoutYProperty());
+			elevatorImageView.yProperty().bind(toggleButtonsLeft.get(1).layoutYProperty());
 			
+			location = elevatorImageView.yProperty().doubleValue();
+			System.out.println(location);
+			elevatorImageView.yProperty().addListener(new ChangeListener<Number>() {
 
+				@Override
+				public void changed(ObservableValue observable,
+						Number oldValue, Number newValue) {
+					
+					//System.out.println(aToggleButton.heightProperty().doubleValue());
+					//System.out.println(Math.abs(newValue.doubleValue() - location));
+					if(Math.abs(newValue.doubleValue() - location) >= aToggleButton.heightProperty().doubleValue())
+					{
+						location = newValue.doubleValue();
+						System.out.println("new value = " +newValue);
+					}
+					
+					
+					
+					
+				}
+			});
 			
 			
 			elevatorPane.getChildren().add(elevatorImageView);
@@ -164,6 +208,11 @@ public class MainView {
 		
 		return listeners.get(0).getElevatorFileName();
 	}
+	
+	private int fireGetNumOfFloor() {
+		
+		return listeners.get(0).getNumOfFloors();
+	}
 
 
 	private void setElevatorButtonListener(ToggleButton t, boolean b) {
@@ -173,8 +222,7 @@ public class MainView {
 			@Override
 			public void handle(ActionEvent event) {
 				System.err.println(t.getId()+" Clicked");
-				if(elevatorImageView.yProperty().doubleValue() == toggleButtonsLeft.get(Integer.parseInt(t.getId())).getLayoutY()
-						-toggleButtonsLeft.get(Integer.parseInt(t.getId())).getHeight())
+				if(elevatorImageView.yProperty().doubleValue() == toggleButtonsLeft.get(Integer.parseInt(t.getId())).getLayoutY())
 				{
 					System.out.println("Blagan");
 					t.setSelected(false);
@@ -225,7 +273,7 @@ public class MainView {
 		//		 + toggleButtonsLeft.get(newFloor).getHeight()));
 		
 		final KeyValue leftDoorKv = new KeyValue(elevatorImageView.yProperty(),(toggleButtonsLeft.get(newFloor).getLayoutY()
-				 - toggleButtonsLeft.get(newFloor).getHeight()));
+				 ));
 		
 		//When animation is finished rebind element y property
 		 EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
@@ -235,12 +283,11 @@ public class MainView {
 			public void handle(ActionEvent t) {
 
 	        	toggleButtonsLeft.get(newFloor).setLayoutY(toggleButtonsLeft.get(newFloor).getLayoutY()
-				 + toggleButtonsLeft.get(newFloor).getHeight());
+				);
 	        	toggleButtonsLeft.get(newFloor).setSelected(false);
 	        	//stage.setResizable(true);
 	        	System.out.println(newFloor);
-	        	elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty()
-	        			.subtract(toggleButtonsLeft.get(newFloor).heightProperty()));
+	        	elevatorImageView.yProperty().bind(toggleButtonsLeft.get(newFloor).layoutYProperty());
 	        }
 	        
 	    };
@@ -262,7 +309,9 @@ public class MainView {
 	private void fireUpChangeFloorEvent(int floorNum)
 	{
 		for (ViewListener l : listeners) {
-			l.changeFloor(floorNum);
+			l.addFloor(floorNum);
+			System.out.println("Added "+floorNum);
+//			l.changeFloor(floorNum);
 		}
 		
 	}
