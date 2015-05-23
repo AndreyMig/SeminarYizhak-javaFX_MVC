@@ -1,17 +1,8 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.scene.paint.Stop;
 import controllers.ModelListener;
 
 public class ElevatorModel {
@@ -79,12 +70,12 @@ public class ElevatorModel {
 	public void addFloor(int newFloor) {
 
 		int diff = newFloor - this.currentFloor;
-		System.err.println("addFloor() diff= " + diff + " newFloor ="
-				+ newFloor + " elevator state = " + this.currentElevatorState.toString());
+//		System.err.println("addFloor() diff= " + diff + " newFloor ="
+//				+ newFloor + " elevator state = " + this.currentElevatorState.toString());
 		int oldDestFloor = this.destinationFloor;
 
 		if (destFloors.size() == 0) {
-			System.out.println("heeeerrrrreeeeee");
+//			System.out.println("heeeerrrrreeeeee");
 			destFloors.add(newFloor);
 			this.destinationFloor = newFloor;
 			updateMovementStatus(newFloor, this.currentFloor);
@@ -98,13 +89,13 @@ public class ElevatorModel {
 				break;
 				
 			case UP:
-				System.out.println("up");
+//				System.out.println("up");
 				handleUpAddition(destFloors, newFloor);
 
 				// start moving to dest
 				break;
 			case DOWN:
-				System.out.println("DOWN");
+//				System.out.println("DOWN");
 				handleDownAddition(destFloors, newFloor);
 				// start moving to dest
 				break;
@@ -143,7 +134,7 @@ public class ElevatorModel {
 
 		} else {
 			for (int i = destFloors.size() - 1; i > -1; i--) {
-
+					System.out.println("pay attention");
 				int nextFloor = destFloors.get(i);
 				if (newFloor > nextFloor) {
 					destFloors.add(i+1, newFloor);
@@ -214,7 +205,7 @@ public class ElevatorModel {
 		else if(diff == 0)
 			this.currentElevatorState = elevatorMovement.STOP;
 		
-		System.out.println("elevator status = " + this.currentElevatorState.toString());
+//		System.out.println("elevator status = " + this.currentElevatorState.toString());
 
 	}
 
