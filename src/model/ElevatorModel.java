@@ -22,8 +22,8 @@ public class ElevatorModel {
 	private ArrayList<ModelListener> modelListeners;
 	private String imageFile = "defaultElevator.png";
 	private String destFloorString = "";
-	
-	
+	public StringBuilder floorHistory = new StringBuilder();
+	public String floorHis ="";
 	
 	public ElevatorModel() {
 		modelListeners = new ArrayList<ModelListener>();
@@ -43,6 +43,8 @@ public class ElevatorModel {
 		
 		if(newFloor - currentFloor == 0)
 			return;
+		
+		floorHistory.append(newFloor+", ");
 		
 		this.destinationFloor = newFloor;
 		this.destFloorString = ""+this.destinationFloor;
@@ -91,6 +93,17 @@ public class ElevatorModel {
 	public void changeElevatorImage(String file) {
 		this.imageFile = file;
 		
+	}
+
+	public String getFloorHis() {
+		floorHis = floorHistory.toString();
+		
+		if(floorHis.endsWith(", "))
+		{
+			floorHis = floorHis.substring(0, floorHis.length()-2);
+		}
+		
+		return floorHis;
 	}
 
 

@@ -65,15 +65,23 @@ public class SummaryView {
 			}
 		});
 
-		TableColumn currentFloorCol = new TableColumn();
-		currentFloorCol.setText("Destination floor");
-		currentFloorCol.setCellValueFactory(new PropertyValueFactory(
+		TableColumn destFloorCol = new TableColumn();
+		destFloorCol.setText("Destination floor");
+		destFloorCol.setCellValueFactory(new PropertyValueFactory(
 				"destFloorString"));
+		
 
 		TableColumn destFloor = new TableColumn();
 		destFloor.setText("Destinaition floor");
 		destFloor.setCellValueFactory(new PropertyValueFactory("currentFloor"));
 
+		
+
+		TableColumn floorHistory = new TableColumn();
+		floorHistory.setText("Floors clicked");
+		floorHistory.setCellValueFactory(new PropertyValueFactory("floorHis"));
+
+		
 		TableColumn<ElevatorModel, String> comboBoxCol = new TableColumn<ElevatorModel, String>();
 
 		comboBoxCol.setText("curFloor");
@@ -109,11 +117,11 @@ public class SummaryView {
 		// ElevatorModel em = getModelFromController();
 		// data.add(em);
 
-		tableView.getColumns().addAll(comboBoxCol, currentFloorCol);
+		tableView.getColumns().addAll(comboBoxCol, destFloorCol, floorHistory);
 		hb.getChildren().add(tableView);
 		hb.getChildren().add(createButton);
 		root.getChildren().add(hb);
-		// root.getChildren().add(createButton);
+		// root.getChildren().add(createButton);W
 
 		stage.show();
 
