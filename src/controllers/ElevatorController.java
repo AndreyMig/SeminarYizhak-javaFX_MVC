@@ -18,6 +18,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 		this.summaryView = summaryView;
 		this.mainView.registerListener(this);
 		this.elevatorModel.registerListener(this);
+		this.summaryView.registerListener(this);
 		
 		
 	}
@@ -32,7 +33,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 	@Override
 	public void floorChanged(int oldFloor, int newFloor) {
 		this.mainView.changeElevatorFloor(oldFloor, newFloor);
-		
+		this.summaryView.dataChanged();
 	}
 
 
@@ -46,6 +47,19 @@ public class ElevatorController implements ViewListener, ModelListener{
 	@Override
 	public String getElevatorFileName() {
 		return this.elevatorModel.getImageFile();
+	}
+
+
+	@Override
+	public ElevatorModel getModel() {
+		return elevatorModel;
+	}
+
+
+	@Override
+	public void changeElevatorImage(String file) {
+		this.elevatorModel.changeElevatorImage(file);
+		this.mainView.changeElevatorImage(file);
 	}
 
 	

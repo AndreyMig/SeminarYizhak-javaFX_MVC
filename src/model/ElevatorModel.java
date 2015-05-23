@@ -13,24 +13,22 @@ import controllers.ModelListener;
 public class ElevatorModel {
 
 
-	public static String[] imageFileNames = {"defaultElevator.png", "elevator-bg"};
+	public static String[] imageFileNames = {"defaultElevator.png", "elevator-bg.png"};
 
 	
 	
 	private int currentFloor;
-	private int DestinationFloor;
-	
-//	private ArrayList<Integer> destFloors = new ArrayList<Integer>();
+	private int destinationFloor;
 	private ArrayList<ModelListener> modelListeners;
 	private String imageFile = "defaultElevator.png";
-	
+	private String destFloorString = "";
 	
 	
 	
 	public ElevatorModel() {
 		modelListeners = new ArrayList<ModelListener>();
 		this.currentFloor = 1;
-		this.DestinationFloor = -1;
+		this.destinationFloor = -1;
 	}
 
 		public void registerListener(ModelListener listener){
@@ -46,15 +44,15 @@ public class ElevatorModel {
 		if(newFloor - currentFloor == 0)
 			return;
 		
-		this.DestinationFloor = newFloor;
-		
+		this.destinationFloor = newFloor;
+		this.destFloorString = ""+this.destinationFloor;
 		fireFloorChangedEvent(this.currentFloor, newFloor);
 		this.currentFloor = newFloor;
 	}
 	
 	public void floorChanged()
 	{
-		this.currentFloor = DestinationFloor;
+		this.currentFloor = destinationFloor;
 	}
 
 
@@ -84,6 +82,15 @@ public class ElevatorModel {
 
 	public void setCurrentFloor(int currentFloor) {
 		this.currentFloor = currentFloor;
+	}
+
+	public String getDestFloorString() {
+		return destFloorString;
+	}
+
+	public void changeElevatorImage(String file) {
+		this.imageFile = file;
+		
 	}
 
 

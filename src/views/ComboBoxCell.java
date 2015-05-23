@@ -19,7 +19,7 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 	private final ComboBox<T> comboBox;
 	private ObservableValue<T> ov;
 
-	public ComboBoxCell(ArrayList<T> items) {
+	public ComboBoxCell(ArrayList<T> items, SummaryView parentView) {
 
 		this.comboBox = new ComboBox<T>();
 		this.comboBox.getItems().addAll(items);
@@ -32,6 +32,7 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 	            System.out.println(ov);
 	              System.out.println(oldVal);
 	              System.out.println(newVal);
+	              parentView.fireChangeElevatorImageEvent(newVal);
 	          }    
 	      });
 		
@@ -56,20 +57,6 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 
 			setGraphic(comboBox);
 
-//			if (ov instanceof StringProperty) {
-//
-//				comboBox.accessibleTextProperty().unbindBidirectional((StringProperty)ov);
-//				
-//		
-//			}
-//
-//			ov = getTableColumn().getCellObservableValue(getIndex());
-//
-//			if (ov instanceof BooleanProperty) {
-//
-//				comboBox.accessibleTextProperty().bindBidirectional((StringProperty)ov);
-//
-//			}
 
 		}
 
