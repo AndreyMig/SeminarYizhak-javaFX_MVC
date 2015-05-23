@@ -26,7 +26,6 @@ public class ElevatorController implements ViewListener, ModelListener{
 	@Override
 	public void changeFloor(int newFloor) {
 		this.elevatorModel.changeFloor(newFloor);
-		System.err.println("xxxxxxxxx");
 	}
 
 
