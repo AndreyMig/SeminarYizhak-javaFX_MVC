@@ -19,6 +19,6 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Pane id="elevatorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ;" GridPane.columnIndex="1" GridPane.rowSpan="8" />
+      <Pane id="elevatorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ;" GridPane.columnIndex="1" GridPane.rowSpan="1" />
    </children>
 </GridPane>

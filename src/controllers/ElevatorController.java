@@ -61,9 +61,28 @@ public class ElevatorController implements ViewListener, ModelListener{
 
 
 	@Override
-	public void floorChanged(int floorNum) {
-		this.elevatorModel.floorChanged(newFloor);
+	public void floorChanged(int num) {
+		this.elevatorModel.onFloorChanged(num);
 		
+	}
+
+
+	@Override
+	public void stopForPassengers(int currentFloor) {
+		mainView.stopForPassengers(currentFloor);
+		
+	}
+
+
+	@Override
+	public int getDestinationFloor() {
+		return elevatorModel.getDestinationFloor();
+	}
+
+
+	@Override
+	public int getCurrentFloor() {
+		return elevatorModel.getCurrentFloor();
 	}
 
 

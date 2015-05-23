@@ -14,4 +14,8 @@ public interface ViewListener {
 	
 	public void floorChanged(int floorNum);
 	
+	public int getDestinationFloor();
+	
+	public int getCurrentFloor();
+	
 }

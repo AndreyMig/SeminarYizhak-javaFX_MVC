@@ -9,6 +9,7 @@ public interface ModelListener {
 	
 	public void elevatorFileChanged(String newFileName);
 	
+	public void stopForPassengers(int currentFloor);
 	
 	
 	
