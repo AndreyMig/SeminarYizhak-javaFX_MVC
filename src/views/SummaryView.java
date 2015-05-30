@@ -139,4 +139,8 @@ public class SummaryView {
 		}
 	}
 
+	public void elevatorViewClosing(ElevatorModel m) {
+		data.remove(m);
+	}
+
 }

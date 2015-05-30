@@ -12,6 +12,7 @@ import controllers.ViewListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 public class MainView {
@@ -53,6 +55,7 @@ public class MainView {
 
 	public MainView(Stage stage) {
 		// initilize array and hashmaps
+		Platform.setImplicitExit(false);
 		listeners = new ArrayList<ViewListener>();
 		toggleButtonsLeft = new HashMap<Integer, ToggleButton>();
 		toggleButtonsRight = new HashMap<Integer, ToggleButton>();
@@ -114,6 +117,24 @@ public class MainView {
 				toggleButtonsLeft.get(1).layoutYProperty());
 
 		elevatorPane.getChildren().add(elevatorImageView);
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	              System.out.println("Stage is closing");
+	              fireViewClosingEvent();
+	          }
+	      }); 
+		
+		
+		
+		changeElevFloor222222(1, 1);
+	}
+
+	protected void fireViewClosingEvent() {
+		for(ViewListener l : listeners)
+		{
+			l.elevatorViewClosing();
+		}
 	}
 
 	private String fireGetElevatorFileNameEvent() {
@@ -154,6 +175,34 @@ public class MainView {
 		listeners.add(listener);
 	}
 
+	
+	public void changeElevFloor222222(int oldFloor, int newFloor){
+		elevatorImageView.yProperty().unbind();
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				int counter = 0;
+				while(counter++<10){
+//					 Platform.runLater(new Runnable() {
+//		                 @Override public void run() {
+		                	 System.out.println("elevatorImageView y = " + elevatorImageView.yProperty()	);
+		 					elevatorImageView.yProperty().set(elevatorImageView.yProperty().getValue()-30);
+		 					try {
+		 						Thread.sleep(200);
+		 					} catch (InterruptedException e) {
+		 						// TODO Auto-generated catch block
+		 						e.printStackTrace();
+		 					}
+//		                 }
+//		             });
+					
+				}
+			}
+		});
+		t.start();
+	}
+	
 	public void changeElevatorFloor(int oldFloor, int newFloor) {
 		double abdDiff = Math.abs(newFloor - oldFloor);
 		

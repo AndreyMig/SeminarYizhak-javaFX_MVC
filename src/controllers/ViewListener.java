@@ -1,5 +1,6 @@
 package controllers;
 
+import views.MainView;
 import model.ElevatorModel;
 
 public interface ViewListener {
@@ -14,5 +15,6 @@ public interface ViewListener {
 
 	public void changeElevatorImage(String file);
 	
+	public void elevatorViewClosing();
 	
 }

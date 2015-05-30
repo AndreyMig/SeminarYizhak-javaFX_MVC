@@ -62,6 +62,13 @@ public class ElevatorController implements ViewListener, ModelListener{
 		this.mainView.changeElevatorImage(file);
 	}
 
+
+	@Override
+	public void elevatorViewClosing() {
+		this.summaryView.elevatorViewClosing(this.elevatorModel);
+		
+	}
+
 	
 	
 	
