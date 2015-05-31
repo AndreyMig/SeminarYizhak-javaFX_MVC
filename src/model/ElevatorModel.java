@@ -12,11 +12,8 @@ public class ElevatorModel {
 			"elevator-bg.png" };
 
 	private int currentFloor;
-	private int destinationFloor;
 	private ArrayList<ModelListener> modelListeners;
 	private String imageFile = "defaultElevator.png";
-	public StringBuilder floorHistory = new StringBuilder();
-	public String floorHis = "";
 	private String modelId; 
 	private boolean[] floors = new boolean[9];
 	private static int numOfModels = 0;
@@ -25,7 +22,6 @@ public class ElevatorModel {
 	public ElevatorModel() {
 		modelListeners = new ArrayList<ModelListener>();
 		this.currentFloor = 1;
-		this.destinationFloor = -1;
 		this.modelId = "ElevatorModel "+ ++numOfModels;
 	}
 
@@ -93,11 +89,6 @@ public class ElevatorModel {
 		return wasTrue;
 	}
 
-	public void floorChanged() {
-		this.currentFloor = destinationFloor;
-	}
-
-
 	public String getImageFile() {
 		return imageFile;
 	}
@@ -127,22 +118,9 @@ public class ElevatorModel {
 		}
 	}
 
-//	public void addStop
-	
-	public String getFloorHis() {
-		floorHis = floorHistory.toString();
 
-		if (floorHis.endsWith(", ")) {
-			floorHis = floorHis.substring(0, floorHis.length() - 2);
-		}
-
-		return floorHis;
-	}
-
-	// public int getNextFloor2(){
-	//
-	// }
-
+	//get next floor according to current elevator movement and current floor
+	//returns -1 if no more pressed stops
 	public int getNextFloor(int upDown, int currentFloor2) {
 
 		int nextFloorGoingUp = -1;
@@ -179,6 +157,7 @@ public class ElevatorModel {
 		return modelId;
 	}
 
+	//Update logger with current floor stop
 	public void updateFloorStop(int currentFloor) {
 		Platform.runLater(new Runnable() {
 			

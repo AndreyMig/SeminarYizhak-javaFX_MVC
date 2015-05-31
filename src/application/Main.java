@@ -10,20 +10,12 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	
-	
-	
-	private static final String FXML_FILE_NAME = "controlPanel.fxml";
-	
-
 
 	@Override
 	public void start(Stage primaryStage) {
 
 		
 		SummaryView view = new SummaryView(primaryStage);
-		
-//		createNewElevetorPanel(view);
 		
 	}
 

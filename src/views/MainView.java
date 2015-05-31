@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -51,6 +49,7 @@ public class MainView {
 		toggleButtonsMap = new HashMap<Integer, ToggleButton>();
 	}
 
+	//create main elevator scene
 	public void createScene(Stage stage) {
 
 		FXMLLoader fxmlRoot = new FXMLLoader();
@@ -85,6 +84,7 @@ public class MainView {
 		stage.setTitle(modelId);
 		stage.show();
 
+		//set elevator binds
 		setInitialBinds(elevatorPane);
 
 		elevatorPane.getChildren().add(elevatorImageView);
@@ -97,6 +97,7 @@ public class MainView {
 
 	}
 
+	
 	private String fireGetModelIdEvent() {
 		return listeners.get(0).getModelId();
 	}
@@ -144,6 +145,7 @@ public class MainView {
 
 			@Override
 			public void handle(ActionEvent event) {
+				//dont allow pressing button on current elevator floor 
 				if (elevatorImageView.yProperty().doubleValue() == toggleButtonsMap
 						.get(Integer.parseInt(t.getId())).getLayoutY()) {
 					t.setSelected(false);
@@ -151,8 +153,9 @@ public class MainView {
 				}
 
 				t.setDisable(true);
+				
+				//dont allow pressing button on current elevator floor 
 				boolean isSameFloor = fireUpChangeFloorEvent(Integer.parseInt(t.getId()));
-
 				if(isSameFloor)
 				{
 					t.setSelected(false);
@@ -169,6 +172,7 @@ public class MainView {
 		listeners.add(listener);
 	}
 
+	//function handles initial elevator movement
 	public void startElevatorMove(int floor) {
 
 		int currentFloor = fireGetCurrentFloorEvent();
@@ -178,6 +182,7 @@ public class MainView {
 			moveFloor(-1);
 	}
 	
+	//moves elevator 1 floor down or up depending on the argument upDowb
 	public void moveFloor(int upDown) {
 		int currentFloor = fireGetCurrentFloorEvent();
 		elevatorImageView.yProperty().unbind();
@@ -187,6 +192,8 @@ public class MainView {
 		final KeyValue kv = new KeyValue(elevatorImageView.yProperty(),
 				toggleButtonsMap.get(currentFloor + upDown).getLayoutY());
 
+		//handles animation stopped logic,
+		//which floor to continue to, or wheter to stop
 		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent t) {
@@ -221,6 +228,7 @@ public class MainView {
 
 	}
 
+	//handles stops and moving to next floor
 	public void stopAtStationAndCallNext(boolean stopElevator, int upDown, int currentFloor) {
 
 		Thread th = new Thread(new Runnable() {

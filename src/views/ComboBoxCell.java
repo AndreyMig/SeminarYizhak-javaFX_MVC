@@ -2,15 +2,9 @@ package views;
 
 import java.util.ArrayList;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 
@@ -43,6 +37,7 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void updateItem(T item, boolean empty) {
 		

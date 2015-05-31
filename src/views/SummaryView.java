@@ -154,6 +154,7 @@ public class SummaryView {
 		tableView.getColumns().get(0).setVisible(true);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void fireChangeElevatorImageEvent(String file, ComboBoxCell cell) {
 
 		TableRow row = (TableRow) cell.getParent();
@@ -162,20 +163,13 @@ public class SummaryView {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public String getCurrentImageFileName(ComboBoxCell cell) {
 		TableRow row = (TableRow) cell.getParent();
 		if (row != null)
 			return data.get(row.getIndex()).getImageFile();
 		return null;
 	}
-
-	// private ViewListener getControllerByElevatorId(String elevatorModelId) {
-	// for (ViewListener l : listeners) {
-	// if (l.getModelId().compareToIgnoreCase(elevatorModelId) == 0)
-	// return l;
-	// }
-	// return null;
-	// }
 
 	public void elevatorViewClosing(ElevatorModel m) {
 		data.remove(m);
