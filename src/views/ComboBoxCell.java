@@ -17,35 +17,40 @@ import javafx.scene.control.TableCell;
 public class ComboBoxCell<S, T> extends TableCell<S, T> {
 
 	private final ComboBox<T> comboBox;
-	private ObservableValue<T> ov;
-
+	private T currentValue;
+	private static int numOf = 0;
+	private SummaryView parentView;
+	@SuppressWarnings("unchecked")
 	public ComboBoxCell(ArrayList<T> items, SummaryView parentView) {
 
+		System.out.println("what? numOf= " + numOf);
 		this.comboBox = new ComboBox<T>();
+		this.comboBox.setId("comb"+ ++numOf);
 		this.comboBox.getItems().addAll(items);
-		
+		currentValue = items.get(0);
+		this.parentView = parentView;
 		this.comboBox.setValue(items.get(0));
-		this.comboBox.valueProperty().addListener((ChangeListener<? super T>) new ChangeListener<String>() {
+		this.comboBox.valueProperty().addListener((ChangeListener<? super T>) new ChangeListener<T>() {
 	       
-			@Override public void changed(ObservableValue ov, String oldVal, String newVal) {
-
-	            System.out.println(ov);
-	              System.out.println(oldVal);
-	              System.out.println(newVal);
-	              parentView.fireChangeElevatorImageEvent(newVal);
+			@Override public void changed(ObservableValue ov, T oldVal, T newVal) {
+				System.out.println(newVal);
+				currentValue = newVal;
+	            parentView.fireChangeElevatorImageEvent(newVal.toString(), ComboBoxCell.this);
 	          }    
 	      });
 		
 		setAlignment(Pos.CENTER);
 
-		setGraphic(comboBox);
+//		setGraphic(comboBox);
 
 	}
 
 	@Override
 	public void updateItem(T item, boolean empty) {
 
-		super.updateItem(item, empty);
+//		System.out.println(item);
+		
+//		super.updateItem(item, empty);
 
 		if (empty) {
 
@@ -55,8 +60,13 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 
 		} else {
 
-			setGraphic(comboBox);
-
+			
+//			System.out.println("update() "+currentValue);
+//			System.err.println("this.comboBox = "+this.comboBox.getId());
+			setGraphic(this.comboBox);
+			System.out.println((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this));
+			if((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this) != null)
+				this.comboBox.setValue((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this));
 
 		}
 

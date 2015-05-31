@@ -22,5 +22,7 @@ public interface ViewListener {
 	public boolean updateCurrentFloor(int newFloor);
 
 	public int getNextFloor(int upDown, int currentFloor);
+
+	public String getModelId();
 	
 }

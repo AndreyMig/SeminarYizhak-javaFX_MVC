@@ -40,7 +40,6 @@ public class MainView {
 	private Timeline elevatorTimeline;
 
 	private final int SCENE_WIDTH = 800;
-
 	private final int SCENE_HEIGHT = 1000;
 	private final int NUM_OF_FLOORS = 8;
 	private ToggleButton aToggleButton;
@@ -82,6 +81,8 @@ public class MainView {
 		elevatorImageView.fitHeightProperty().bind(
 				aToggleButton.heightProperty());
 		stage.setScene(scene);
+		String modelId = fireGetModelIdEvent();
+		stage.setTitle(modelId);
 		stage.show();
 
 		setInitialBinds(elevatorPane);
@@ -90,11 +91,14 @@ public class MainView {
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
-				System.out.println("Stage is closing");
 				fireViewClosingEvent();
 			}
 		});
 
+	}
+
+	private String fireGetModelIdEvent() {
+		return listeners.get(0).getModelId();
 	}
 
 	private void setInitialBinds(Pane elevatorPane) {
@@ -140,11 +144,9 @@ public class MainView {
 
 			@Override
 			public void handle(ActionEvent event) {
-				System.err.println("Button "+t.getId()+" clicked");
 				if (elevatorImageView.yProperty().doubleValue() == toggleButtonsMap
 						.get(Integer.parseInt(t.getId())).getLayoutY()) {
 					t.setSelected(false);
-					System.err.println("Button action stoped");
 					return;
 				}
 
@@ -190,12 +192,10 @@ public class MainView {
 			public void handle(ActionEvent t) {
 
 				int newCurFloor = currentFloor + upDown;
-				System.out.println("finished");
 				boolean isStop = fireUpCurrentFloorUpdate(newCurFloor);
 				toggleButtonsMap.get(newCurFloor).setSelected(false);
 				toggleButtonsMap.get(newCurFloor).setDisable(false);
 				int nextFloor = fireGetNextFloorEvent(upDown, newCurFloor);
-				System.out.println("nextFloor = " + nextFloor);
 				if (nextFloor <= 0) {
 					elevatorImageView.yProperty()
 							.bind(toggleButtonsMap.get(newCurFloor)
@@ -230,6 +230,7 @@ public class MainView {
 				try {
 					if (stopElevator)
 						Thread.sleep(700);
+					//TODO UPDATE FLOOR STOPS
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

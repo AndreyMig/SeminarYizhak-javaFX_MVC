@@ -1,15 +1,6 @@
 package model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import controllers.ModelListener;
 
 public class ElevatorModel {
@@ -21,15 +12,18 @@ public class ElevatorModel {
 	private int destinationFloor;
 	private ArrayList<ModelListener> modelListeners;
 	private String imageFile = "defaultElevator.png";
-	private String destFloorString = "";
 	public StringBuilder floorHistory = new StringBuilder();
 	public String floorHis = "";
+	private String modelId; 
 	private boolean[] floors = new boolean[9];
-
+	private static int numOfModels = 0;
+	
+	
 	public ElevatorModel() {
 		modelListeners = new ArrayList<ModelListener>();
 		this.currentFloor = 1;
 		this.destinationFloor = -1;
+		this.modelId = "ElevatorModel "+ ++numOfModels;
 	}
 
 	public void registerListener(ModelListener listener) {
@@ -40,8 +34,7 @@ public class ElevatorModel {
 
 	// Called from elevator button pressed
 	public boolean addFloor(int newFloor) {
-		System.out.println("addFloor() with newFloor = " + newFloor);
-		System.out.println("addFloor() with currentFloor = " + currentFloor);
+		
 		if (newFloor - currentFloor == 0)
 			return true;
 
@@ -53,7 +46,6 @@ public class ElevatorModel {
 		}
 
 		if (!b) {
-			System.out.println("doesnt contains true");
 			setFloors(true, newFloor);
 			// floors[newFloor] = true;
 			fireStartElevatorMoveEvent(newFloor);
@@ -84,7 +76,6 @@ public class ElevatorModel {
 	}
 
 	public boolean updateCurrentFloor(int newFloor) {
-		System.out.println("newFloor =" + newFloor);
 		this.currentFloor = newFloor;
 		boolean wasTrue = getFloor(newFloor);
 		setFloors(false, newFloor);
@@ -121,13 +112,17 @@ public class ElevatorModel {
 		this.currentFloor = currentFloor;
 	}
 
-	public String getDestFloorString() {
-		return destFloorString;
-	}
-
 	public void changeElevatorImage(String file) {
 		this.imageFile = file;
+		System.out.println(file);
+		fireChangeImageEvent(this.imageFile);
 
+	}
+
+	private void fireChangeImageEvent(String file) {
+		for(ModelListener l : modelListeners){
+			l.elevatorFileChanged(file);
+		}
 	}
 
 	public String getFloorHis() {
@@ -146,8 +141,6 @@ public class ElevatorModel {
 
 	public int getNextFloor(int upDown, int currentFloor2) {
 
-		System.out.println("getNextFloor() upDown = " + upDown
-				+ " currentFloor2 = " + currentFloor2);
 		int nextFloorGoingUp = -1;
 		int nextFloorGoingDown = -1;
 		for (int i = currentFloor2; i < floors.length; i++) {
@@ -157,7 +150,6 @@ public class ElevatorModel {
 			}
 
 		}
-		System.out.println("nextFloorGoingUp = "+nextFloorGoingUp);
 		for (int i = currentFloor2; i > -1; i--) {
 			if (getFloor(i)) {
 				nextFloorGoingDown = i;
@@ -166,12 +158,6 @@ public class ElevatorModel {
 
 		}
 
-		for (int i = 0; i < floors.length; i++) {
-			System.err.print(floors[i] + " ");
-		}
-		System.out.println();
-		
-		System.out.println("nextFloorGoingDown = "+nextFloorGoingDown);
 		if(upDown>0)
 			return nextFloorGoingUp>0 ? nextFloorGoingUp : nextFloorGoingDown;
 		
@@ -179,4 +165,10 @@ public class ElevatorModel {
 
 	}
 
+	public String getModelId() {
+		return modelId;
+	}
+
+	
+	
 }

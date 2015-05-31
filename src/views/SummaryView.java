@@ -14,13 +14,17 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.converter.DefaultStringConverter;
 
 public class SummaryView {
 
@@ -31,7 +35,6 @@ public class SummaryView {
 	private ArrayList<ViewListener> listeners;
 	private TableView<ElevatorModel> tableView;
 
-	
 	public SummaryView(Stage stage) {
 
 		listeners = new ArrayList<>();
@@ -43,6 +46,7 @@ public class SummaryView {
 		listeners.add(l);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createScene(Stage stage) {
 
 		Group root = new Group();
@@ -55,37 +59,23 @@ public class SummaryView {
 		Button createButton = new Button("Create");
 		createButton.prefWidthProperty().bind(stage.widthProperty().divide(10));
 
-		createButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				ElevatorModel em = Main
-						.createNewElevetorPanel(SummaryView.this);
-				data.add(em);
+		TableColumn modelIdCol = new TableColumn();
+		modelIdCol.setText("Model id");
+		modelIdCol.setCellValueFactory(new PropertyValueFactory("modelId"));
 
-			}
-		});
-
-		TableColumn destFloorCol = new TableColumn();
-		destFloorCol.setText("Destination floor");
-		destFloorCol.setCellValueFactory(new PropertyValueFactory(
-				"destFloorString"));
-		
-
-		TableColumn destFloor = new TableColumn();
-		destFloor.setText("Destinaition floor");
-		destFloor.setCellValueFactory(new PropertyValueFactory("currentFloor"));
-
-		
+		TableColumn currentFloor = new TableColumn();
+		currentFloor.setText("Current floor");
+		currentFloor.setCellValueFactory(new PropertyValueFactory(
+				"currentFloor"));
 
 		TableColumn floorHistory = new TableColumn();
-		floorHistory.setText("Floors clicked");
+		floorHistory.setText("Floor stops");
 		floorHistory.setCellValueFactory(new PropertyValueFactory("floorHis"));
 
-		
 		TableColumn<ElevatorModel, String> comboBoxCol = new TableColumn<ElevatorModel, String>();
 
-		comboBoxCol.setText("curFloor");
+		comboBoxCol.setText("Elevator image");
 
 		comboBoxCol.setMinWidth(50);
 
@@ -94,20 +84,57 @@ public class SummaryView {
 
 		comboBoxCol
 				.setCellValueFactory(new PropertyValueFactory<ElevatorModel, String>(
-						"curFloor"));
+						"imageFile"));
+
+//		comboBoxCol.setCellFactory(new Callback<TableColumn<ElevatorModel,String>, TableCell<ElevatorModel,String>>() {
+//
+//			@Override
+//			public TableCell<ElevatorModel, String> call(
+//					TableColumn<ElevatorModel, String> param) {
+//				return new ComboBoxTableCell<ElevatorModel, String>(){
+//					
+//					  @Override
+//	                    public void updateItem(String model, boolean empty) {
+//	                        super.updateItem(model, empty);
+//	                        if (model != null) {
+//	                        	System.err.println("sadasdsa");
+//	                            setText(model);
+//	                            setGraphic(new ComboBox());
+//	                        }
+//	                    }
+//					
+//				};
+//			}
+//			
+//			
+//			
+//		});
+//			
+			
+			
 
 		comboBoxCol
 				.setCellFactory(new Callback<TableColumn<ElevatorModel, String>, TableCell<ElevatorModel, String>>() {
-
 					@Override
 					public TableCell<ElevatorModel, String> call(
 							TableColumn<ElevatorModel, String> arg0) {
 						return new ComboBoxCell<>(fileNames, SummaryView.this);
-
 					}
 
 				});
+		
 
+		createButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				ElevatorModel em = Main
+						.createNewElevetorPanel(SummaryView.this);
+				data.add(em);
+//				System.out.println(tableView.getChildrenUnmodifiable().get(0));
+			}
+		});
+		
 		tableView = new TableView<ElevatorModel>();
 		tableView.prefWidthProperty().bind(stage.widthProperty().divide(1.2));
 		tableView.prefHeightProperty().bind(stage.heightProperty());
@@ -115,10 +142,8 @@ public class SummaryView {
 		tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		tableView.setItems(data);
 
-		// ElevatorModel em = getModelFromController();
-		// data.add(em);
-
-		tableView.getColumns().addAll(comboBoxCol, destFloorCol, floorHistory);
+		tableView.getColumns().addAll(modelIdCol, currentFloor, floorHistory,
+				comboBoxCol);
 		hb.getChildren().add(tableView);
 		hb.getChildren().add(createButton);
 		root.getChildren().add(hb);
@@ -133,11 +158,30 @@ public class SummaryView {
 		tableView.getColumns().get(0).setVisible(true);
 	}
 
-	public void fireChangeElevatorImageEvent(String file) {
-		for(ViewListener l : listeners)
-		{
-			l.changeElevatorImage(file);
+	public void fireChangeElevatorImageEvent(String file, ComboBoxCell cell) {
+
+		// System.out.println(cell.getParent().getParent().getParent());
+		TableRow row = (TableRow) cell.getParent();
+		// System.out.println(row.getIndex());
+
+		System.out.println(data.get(row.getIndex()).getModelId());
+		data.get(row.getIndex()).changeElevatorImage(file);
+
+	}
+	
+	public String getCurrentImageFileName(ComboBoxCell cell){
+		TableRow row = (TableRow) cell.getParent();
+		if(row!=null)
+			return data.get(row.getIndex()).getImageFile();
+		return null;
+	}
+
+	private ViewListener getControllerByElevatorId(String elevatorModelId) {
+		for (ViewListener l : listeners) {
+			if (l.getModelId().compareToIgnoreCase(elevatorModelId) == 0)
+				return l;
 		}
+		return null;
 	}
 
 	public void elevatorViewClosing(ElevatorModel m) {
