@@ -16,5 +16,11 @@ public interface ViewListener {
 	public void changeElevatorImage(String file);
 	
 	public void elevatorViewClosing();
+
+	public int getCurrentFloor();
+
+	public boolean updateCurrentFloor(int newFloor);
+
+	public int getNextFloor(int upDown, int currentFloor);
 	
 }

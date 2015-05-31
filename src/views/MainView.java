@@ -8,18 +8,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import controllers.ViewListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,6 +25,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import controllers.ViewListener;
 
 public class MainView {
 
@@ -47,6 +45,8 @@ public class MainView {
 	private final int NUM_OF_FLOORS = 8;
 	private ToggleButton aToggleButton;
 	private ImageView elevatorImageView;
+	
+	
 	// private final String ELEVATOR_INTERIOR_IMAGE = "elev2.png";
 	private final String ELEVATOR_INTERIOR_IMAGE = "elevator-bg.png";
 
@@ -55,7 +55,6 @@ public class MainView {
 
 	public MainView(Stage stage) {
 		// initilize array and hashmaps
-		Platform.setImplicitExit(false);
 		listeners = new ArrayList<ViewListener>();
 		toggleButtonsLeft = new HashMap<Integer, ToggleButton>();
 		toggleButtonsRight = new HashMap<Integer, ToggleButton>();
@@ -127,7 +126,9 @@ public class MainView {
 		
 		
 		
-		changeElevFloor222222(1, 1);
+//		changeElevFloor222222(1, 1);
+//		changeElevatorFloor(1, 3);
+//		moveFloor(1);
 	}
 
 	protected void fireViewClosingEvent() {
@@ -149,22 +150,32 @@ public class MainView {
 			@Override
 			public void handle(ActionEvent event) {
 //				System.err.println(t.getId() + " Clicked");
+				
+			
 				if (elevatorImageView.yProperty().doubleValue() == toggleButtonsLeft
 						.get(Integer.parseInt(t.getId())).getLayoutY()) {
 					t.setSelected(false);
 					return;
 				}
-
 				
-				for(Entry<Integer, ToggleButton> e : toggleButtonsLeft.entrySet())
-				{
-					if(Integer.parseInt(t.getId()) != e.getKey())
-					{
-						e.getValue().setSelected(false);
-					}
-				}
 				
+				t.setDisable(true);
+				
+//				for(Entry<Integer, ToggleButton> e : toggleButtonsLeft.entrySet())
+//				{
+//					if(Integer.parseInt(t.getId()) != e.getKey())
+//					{
+//						e.getValue().setSelected(false);
+//					}
+//				}
+//				if(t.isSelected())
+//				{
+//					System.out.println("dasdaddaadsda");
+//					t.setSelected(true);
+//					return;
+//				}
 				fireUpChangeFloorEvent(Integer.parseInt(t.getId()));
+				
 			}
 
 		});
@@ -175,48 +186,115 @@ public class MainView {
 		listeners.add(listener);
 	}
 
+
 	
-	public void changeElevFloor222222(int oldFloor, int newFloor){
+	
+	public void moveFloor(int upDown)
+	{
+		int currentFloor = fireGetCurrentFloorEvent();
 		elevatorImageView.yProperty().unbind();
-		Thread t = new Thread(new Runnable() {
+		elevatorTimeline = new Timeline();
+		elevatorTimeline.setCycleCount(1);
+		elevatorTimeline.setAutoReverse(true);
+		final KeyValue kv = new KeyValue(elevatorImageView.yProperty(),
+				toggleButtonsLeft.get(currentFloor+upDown).getLayoutY());
+		
+		
+		
+		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent t) {
+
+					int newCurFloor = currentFloor+upDown;
+					System.out.println("finished");
+					boolean isStop = fireUpCurrentFloorUpdate(newCurFloor);
+					toggleButtonsLeft.get(newCurFloor).setSelected(false);
+					toggleButtonsLeft.get(newCurFloor).setDisable(false);
+//					int nextFloor = -1;
+//					if(newCurFloor == 8 || newCurFloor == 1)
+//						nextFloor = fireGetNextFloorEvent(-1*upDown, newCurFloor);
+//					else
+					int nextFloor = fireGetNextFloorEvent(upDown, newCurFloor);
+					System.out.println("nextFloor = " +nextFloor);
+					if(nextFloor<=0)
+					{
+						elevatorImageView.yProperty().bind(
+								toggleButtonsLeft.get(newCurFloor).layoutYProperty());
+						return;
+					}
+						
+					
+					final int diff = nextFloor-newCurFloor;
+					
+					int nextElvatorMove = diff<0 ? -1 : 1;
+					
+					
+					stopAtStationAndCallNext(isStop, nextElvatorMove);
+				
+				
+			
+			}
+
+		};
+		
+
+		final KeyFrame leftDoorKf = new KeyFrame(
+				Duration.millis(300), onFinished, kv);
+		elevatorTimeline.getKeyFrames().add(leftDoorKf);
+
+		elevatorTimeline.play();
+		
+
+	}
+	
+	
+	public void stopAtStationAndCallNext(boolean stopElevator, int upDown){
+		
+		Thread th = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				int counter = 0;
-				while(counter++<10){
-//					 Platform.runLater(new Runnable() {
-//		                 @Override public void run() {
-		                	 System.out.println("elevatorImageView y = " + elevatorImageView.yProperty()	);
-		 					elevatorImageView.yProperty().set(elevatorImageView.yProperty().getValue()-30);
-		 					try {
-		 						Thread.sleep(200);
-		 					} catch (InterruptedException e) {
-		 						// TODO Auto-generated catch block
-		 						e.printStackTrace();
-		 					}
-//		                 }
-//		             });
-					
+				try {
+					if(stopElevator)
+						Thread.sleep(700);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
+				moveFloor(upDown);
 			}
 		});
-		t.start();
+		
+		th.start();
+		
+		
+		
 	}
 	
+	protected int fireGetNextFloorEvent(int upDown, int currentFloor) {
+		return listeners.get(0).getNextFloor(upDown, currentFloor);
+	}
+
+	protected boolean fireUpCurrentFloorUpdate(int newFloor) {
+		boolean a = false;
+		for(ViewListener l : listeners)
+		{
+			a = l.updateCurrentFloor(newFloor);
+		}
+		return a;
+	}
+
+	private int fireGetCurrentFloorEvent() {
+		return listeners.get(0).getCurrentFloor();
+	}
+
 	public void changeElevatorFloor(int oldFloor, int newFloor) {
 		double abdDiff = Math.abs(newFloor - oldFloor);
-		
+
 		abdDiff  = Math.abs(elevatorImageView.getY() - toggleButtonsLeft.get(newFloor).getLayoutY());
 //		System.out.println("new absDiff = " + abdDiff) ;
 		if (elevatorTimeline != null)
 			elevatorTimeline.stop();
 
-		System.out.println("new floor " + newFloor);
-		System.out.println("old floor " + oldFloor);
-
-		// int upDown = newFloor-oldFloor > 0 ? -1 : 1;
-
-//		System.out.println("new floor number = " + newFloor);
 		elevatorImageView.yProperty().unbind();
 		elevatorTimeline = new Timeline();
 		elevatorTimeline.setCycleCount(1);
@@ -225,29 +303,21 @@ public class MainView {
 		final KeyValue kv = new KeyValue(elevatorImageView.yProperty(),
 				(toggleButtonsLeft.get(newFloor).getLayoutY()));
 
-		 getFloorbyY();
-		
-		
-		// When animation is finished rebind element y property
 		EventHandler<ActionEvent> onFinished = new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent t) {
 
-				
-				System.out.println("on finish handler");
-				
 				toggleButtonsLeft.get(newFloor).setLayoutY(
 						toggleButtonsLeft.get(newFloor).getLayoutY()
 								+ toggleButtonsLeft.get(newFloor).getHeight());
 				toggleButtonsLeft.get(newFloor).setSelected(false);
+				
 
 				elevatorImageView.yProperty().bind(
 						toggleButtonsLeft.get(newFloor).layoutYProperty());
 			}
 
 		};
-		
-		
 
 		final KeyFrame leftDoorKf = new KeyFrame(
 				Duration.millis(5 * abdDiff), onFinished, kv);
@@ -289,6 +359,15 @@ public class MainView {
 	{
 		Image elevatorImage = new Image(newFileName);
 		elevatorImageView.setImage(elevatorImage);
+	}
+
+	public void startElevatorMove(int floor) {
+		
+		int currentFloor = fireGetCurrentFloorEvent();
+		if(floor - currentFloor >0)
+			moveFloor(1);
+		else
+			moveFloor(-1);
 	}
 
 }

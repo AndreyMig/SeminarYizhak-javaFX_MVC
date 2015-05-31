@@ -31,6 +31,7 @@ public class SummaryView {
 	private ArrayList<ViewListener> listeners;
 	private TableView<ElevatorModel> tableView;
 
+	
 	public SummaryView(Stage stage) {
 
 		listeners = new ArrayList<>();

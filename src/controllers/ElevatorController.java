@@ -26,7 +26,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 
 	@Override
 	public void changeFloor(int newFloor) {
-		this.elevatorModel.changeFloor(newFloor);
+		this.elevatorModel.addFloor(newFloor);
 	}
 
 
@@ -67,6 +67,30 @@ public class ElevatorController implements ViewListener, ModelListener{
 	public void elevatorViewClosing() {
 		this.summaryView.elevatorViewClosing(this.elevatorModel);
 		
+	}
+
+
+	@Override
+	public int getCurrentFloor() {
+		return elevatorModel.getCurrentFloor();
+	}
+
+
+	@Override
+	public boolean updateCurrentFloor(int newFloor) {
+		return elevatorModel.updateCurrentFloor(newFloor);
+	}
+
+
+	@Override
+	public void startElevatorMove(int floor) {
+		mainView.startElevatorMove(floor);
+	}
+
+
+	@Override
+	public int getNextFloor(int upDown, int currentFloor) {
+		return elevatorModel.getNextFloor(upDown, currentFloor);
 	}
 
 	
