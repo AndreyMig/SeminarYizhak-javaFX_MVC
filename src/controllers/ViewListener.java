@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.scene.paint.Color;
 import views.MainView;
 import model.ElevatorModel;
 
@@ -24,5 +25,9 @@ public interface ViewListener {
 	public int getNextFloor(int upDown, int currentFloor);
 
 	public String getModelId();
+
+	void logToGui(String msg, Color c);
+
+	public void updateFloorStop(int currentFloor);
 	
 }

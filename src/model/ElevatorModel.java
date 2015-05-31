@@ -1,6 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+
+import javafx.application.Platform;
+import javafx.scene.paint.Color;
 import controllers.ModelListener;
 
 public class ElevatorModel {
@@ -38,7 +41,7 @@ public class ElevatorModel {
 		if (newFloor - currentFloor == 0)
 			return true;
 
-		floorHistory.append(newFloor + ", ");
+//		floorHistory.append(newFloor + ", ");
 
 		boolean b = false;
 		for (int i = 1; i < floors.length; i++) {
@@ -47,7 +50,9 @@ public class ElevatorModel {
 
 		if (!b) {
 			setFloors(true, newFloor);
-			// floors[newFloor] = true;
+			
+			fireLogToGuiEvent(modelId+" has started moving \n", Color.GREEN);
+			
 			fireStartElevatorMoveEvent(newFloor);
 		} else {
 			setFloors(true, newFloor);
@@ -55,6 +60,12 @@ public class ElevatorModel {
 		}
 		return false;
 
+	}
+
+	private void fireLogToGuiEvent(String msg, Color c) {
+		for(ModelListener l : modelListeners){
+			l.logToGui(msg, c);
+		}
 	}
 
 	private void fireStartElevatorMoveEvent(int newFloor) {
@@ -85,16 +96,7 @@ public class ElevatorModel {
 	public void floorChanged() {
 		this.currentFloor = destinationFloor;
 	}
-//
-//	private void fireFloorChangedEvent(int oldFloor, int newFloor) {
-//
-//		for (ModelListener modelListener : modelListeners) {
-//
-//			modelListener.floorChanged(oldFloor, newFloor);
-//
-//		}
-//
-//	}
+
 
 	public String getImageFile() {
 		return imageFile;
@@ -125,6 +127,8 @@ public class ElevatorModel {
 		}
 	}
 
+//	public void addStop
+	
 	public String getFloorHis() {
 		floorHis = floorHistory.toString();
 
@@ -158,6 +162,11 @@ public class ElevatorModel {
 
 		}
 
+		if(nextFloorGoingUp<0 &&nextFloorGoingDown<0)
+		{
+			fireLogToGuiEvent(modelId+" has stoped moving \n", Color.RED);
+		}
+		
 		if(upDown>0)
 			return nextFloorGoingUp>0 ? nextFloorGoingUp : nextFloorGoingDown;
 		
@@ -167,6 +176,17 @@ public class ElevatorModel {
 
 	public String getModelId() {
 		return modelId;
+	}
+
+	public void updateFloorStop(int currentFloor) {
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				fireLogToGuiEvent(modelId+"has stopped for passengers at floor "+currentFloor + "\n", Color.BLACK);
+			}
+		});
+	
 	}
 
 	

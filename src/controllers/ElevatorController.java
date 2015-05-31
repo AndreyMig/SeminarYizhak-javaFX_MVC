@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.scene.paint.Color;
 import model.ElevatorModel;
 import views.MainView;
 import views.SummaryView;
@@ -95,14 +96,19 @@ public class ElevatorController implements ViewListener, ModelListener{
 		return elevatorModel.getModelId();
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public void logToGui(String msg, Color c) {
+		this.summaryView.logToGui(msg, c);
+	}
+
+
+	@Override
+	public void updateFloorStop(int currentFloor) {
+		this.elevatorModel.updateFloorStop(currentFloor);
+	}
+
+
 	
 	
 }

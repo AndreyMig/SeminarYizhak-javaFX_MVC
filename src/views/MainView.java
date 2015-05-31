@@ -39,8 +39,8 @@ public class MainView {
 	private Map<Integer, ToggleButton> toggleButtonsMap;
 	private Timeline elevatorTimeline;
 
-	private final int SCENE_WIDTH = 800;
-	private final int SCENE_HEIGHT = 1000;
+	private final int SCENE_WIDTH = 300;
+	private final int SCENE_HEIGHT = 500;
 	private final int NUM_OF_FLOORS = 8;
 	private ToggleButton aToggleButton;
 	private ImageView elevatorImageView;
@@ -127,7 +127,7 @@ public class MainView {
 
 	}
 
-	protected void fireViewClosingEvent() {
+	private void fireViewClosingEvent() {
 		for (ViewListener l : listeners) {
 			l.elevatorViewClosing();
 		}
@@ -207,7 +207,7 @@ public class MainView {
 
 				int nextElvatorMove = diff < 0 ? -1 : 1;
 
-				stopAtStationAndCallNext(isStop, nextElvatorMove);
+				stopAtStationAndCallNext(isStop, nextElvatorMove, newCurFloor);
 
 			}
 
@@ -221,7 +221,7 @@ public class MainView {
 
 	}
 
-	public void stopAtStationAndCallNext(boolean stopElevator, int upDown) {
+	public void stopAtStationAndCallNext(boolean stopElevator, int upDown, int currentFloor) {
 
 		Thread th = new Thread(new Runnable() {
 
@@ -229,8 +229,11 @@ public class MainView {
 			public void run() {
 				try {
 					if (stopElevator)
+					{
+						fireUpdateStopEvent(currentFloor);
 						Thread.sleep(700);
-					//TODO UPDATE FLOOR STOPS
+					}
+
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -242,11 +245,20 @@ public class MainView {
 
 	}
 
-	protected int fireGetNextFloorEvent(int upDown, int currentFloor) {
+	private void fireUpdateStopEvent(int currentFloor) {
+		for(ViewListener l : listeners)
+		{
+			
+			l.updateFloorStop(currentFloor);
+			
+		}
+	}
+
+	private int fireGetNextFloorEvent(int upDown, int currentFloor) {
 		return listeners.get(0).getNextFloor(upDown, currentFloor);
 	}
 
-	protected boolean fireUpCurrentFloorUpdate(int newFloor) {
+	private boolean fireUpCurrentFloorUpdate(int newFloor) {
 		boolean a = false;
 		for (ViewListener l : listeners) {
 			a = l.updateCurrentFloor(newFloor);

@@ -23,7 +23,6 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 	@SuppressWarnings("unchecked")
 	public ComboBoxCell(ArrayList<T> items, SummaryView parentView) {
 
-		System.out.println("what? numOf= " + numOf);
 		this.comboBox = new ComboBox<T>();
 		this.comboBox.setId("comb"+ ++numOf);
 		this.comboBox.getItems().addAll(items);
@@ -33,7 +32,6 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 		this.comboBox.valueProperty().addListener((ChangeListener<? super T>) new ChangeListener<T>() {
 	       
 			@Override public void changed(ObservableValue ov, T oldVal, T newVal) {
-				System.out.println(newVal);
 				currentValue = newVal;
 	            parentView.fireChangeElevatorImageEvent(newVal.toString(), ComboBoxCell.this);
 	          }    
@@ -47,10 +45,8 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 
 	@Override
 	public void updateItem(T item, boolean empty) {
-
-//		System.out.println(item);
 		
-//		super.updateItem(item, empty);
+		super.updateItem(item, empty);
 
 		if (empty) {
 
@@ -59,12 +55,8 @@ public class ComboBoxCell<S, T> extends TableCell<S, T> {
 			setGraphic(null);
 
 		} else {
-
 			
-//			System.out.println("update() "+currentValue);
-//			System.err.println("this.comboBox = "+this.comboBox.getId());
 			setGraphic(this.comboBox);
-			System.out.println((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this));
 			if((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this) != null)
 				this.comboBox.setValue((T)this.parentView.getCurrentImageFileName(ComboBoxCell.this));
 
