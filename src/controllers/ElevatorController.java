@@ -25,16 +25,16 @@ public class ElevatorController implements ViewListener, ModelListener{
 
 
 	@Override
-	public void changeFloor(int newFloor) {
-		this.elevatorModel.addFloor(newFloor);
+	public boolean changeFloor(int newFloor) {
+		return this.elevatorModel.addFloor(newFloor);
 	}
 
-
-	@Override
-	public void floorChanged(int oldFloor, int newFloor) {
-		this.mainView.changeElevatorFloor(oldFloor, newFloor);
-		this.summaryView.dataChanged();
-	}
+//
+//	@Override
+//	public void floorChanged(int oldFloor, int newFloor) {
+//		this.mainView.changeElevatorFloor(oldFloor, newFloor);
+//		this.summaryView.dataChanged();
+//	}
 
 
 	@Override

@@ -39,17 +39,11 @@ public class ElevatorModel {
 	}
 
 	// Called from elevator button pressed
-	public void addFloor(int newFloor) {
+	public boolean addFloor(int newFloor) {
 		System.out.println("addFloor() with newFloor = " + newFloor);
 		System.out.println("addFloor() with currentFloor = " + currentFloor);
 		if (newFloor - currentFloor == 0)
-			return;
-		//
-
-		for (int i = 0; i < floors.length; i++) {
-			System.err.print(floors[i] + " ");
-		}
-		System.out.println();
+			return true;
 
 		floorHistory.append(newFloor + ", ");
 
@@ -67,6 +61,7 @@ public class ElevatorModel {
 			setFloors(true, newFloor);
 			// floors[newFloor] = true;
 		}
+		return false;
 
 	}
 
@@ -99,16 +94,16 @@ public class ElevatorModel {
 	public void floorChanged() {
 		this.currentFloor = destinationFloor;
 	}
-
-	private void fireFloorChangedEvent(int oldFloor, int newFloor) {
-
-		for (ModelListener modelListener : modelListeners) {
-
-			modelListener.floorChanged(oldFloor, newFloor);
-
-		}
-
-	}
+//
+//	private void fireFloorChangedEvent(int oldFloor, int newFloor) {
+//
+//		for (ModelListener modelListener : modelListeners) {
+//
+//			modelListener.floorChanged(oldFloor, newFloor);
+//
+//		}
+//
+//	}
 
 	public String getImageFile() {
 		return imageFile;
@@ -162,7 +157,7 @@ public class ElevatorModel {
 			}
 
 		}
-
+		System.out.println("nextFloorGoingUp = "+nextFloorGoingUp);
 		for (int i = currentFloor2; i > -1; i--) {
 			if (getFloor(i)) {
 				nextFloorGoingDown = i;
@@ -171,7 +166,12 @@ public class ElevatorModel {
 
 		}
 
+		for (int i = 0; i < floors.length; i++) {
+			System.err.print(floors[i] + " ");
+		}
+		System.out.println();
 		
+		System.out.println("nextFloorGoingDown = "+nextFloorGoingDown);
 		if(upDown>0)
 			return nextFloorGoingUp>0 ? nextFloorGoingUp : nextFloorGoingDown;
 		

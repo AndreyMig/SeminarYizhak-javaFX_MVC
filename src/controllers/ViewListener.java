@@ -7,7 +7,7 @@ public interface ViewListener {
 
 	
 	
-	public void changeFloor(int floorNum);
+	public boolean changeFloor(int floorNum);
 	
 	public String getElevatorFileName();
 
