@@ -164,6 +164,7 @@ public class ElevatorModel {
 
 		if(nextFloorGoingUp<0 &&nextFloorGoingDown<0)
 		{
+			fireLogToGuiEvent(modelId+" has stopped for passengers at floor "+currentFloor + "\n", Color.BLACK);
 			fireLogToGuiEvent(modelId+" has stoped moving \n", Color.RED);
 		}
 		
