@@ -183,7 +183,7 @@ public class ElevatorModel {
 			
 			@Override
 			public void run() {
-				fireLogToGuiEvent(modelId+"has stopped for passengers at floor "+currentFloor + "\n", Color.BLACK);
+				fireLogToGuiEvent(modelId+" has stopped for passengers at floor "+currentFloor + "\n", Color.BLACK);
 			}
 		});
 	
