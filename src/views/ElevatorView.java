@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -13,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -20,15 +22,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import controllers.ViewListener;
 
-public class MainView {
+public class ElevatorView {
 
 	public static Scene scene;
-	private ArrayList<ViewListener> listeners;
+	private ArrayList<ViewListener> viewListeners;
 
 	private final String MAIN_GRID_ID = "#mainGrid";
 	private final String ELEVATOR_PANE_ID = "#elevatorPane";
@@ -37,15 +40,16 @@ public class MainView {
 	private Map<Integer, ToggleButton> toggleButtonsMap;
 	private Timeline elevatorTimeline;
 
-	private final int SCENE_WIDTH = 300;
+	private final int SCENE_WIDTH = 350;
 	private final int SCENE_HEIGHT = 500;
+
 	private final int NUM_OF_FLOORS = 8;
 	private ToggleButton aToggleButton;
 	private ImageView elevatorImageView;
 
-	public MainView(Stage stage) {
+	public ElevatorView(Stage stage) {
 		// initilize array and hashmaps
-		listeners = new ArrayList<ViewListener>();
+		viewListeners = new ArrayList<ViewListener>();
 		toggleButtonsMap = new HashMap<Integer, ToggleButton>();
 	}
 
@@ -62,8 +66,14 @@ public class MainView {
 			e.printStackTrace();
 			return;
 		}
-
+		
+//		 Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+//		 
+//		 stage.setWidth(primaryScreenBounds.getWidth()/6);
+//		 stage.setHeight(primaryScreenBounds.getHeight()/3);
+		
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+//		Scene scene = new Scene(root);
 
 		GridPane gridPane = (GridPane) scene.lookup(MAIN_GRID_ID);
 		Pane elevatorPane = (Pane) scene.lookup(ELEVATOR_PANE_ID);
@@ -99,7 +109,7 @@ public class MainView {
 
 	
 	private String fireGetModelIdEvent() {
-		return listeners.get(0).getModelId();
+		return viewListeners.get(0).getModelId();
 	}
 
 	private void setInitialBinds(Pane elevatorPane) {
@@ -129,14 +139,14 @@ public class MainView {
 	}
 
 	private void fireViewClosingEvent() {
-		for (ViewListener l : listeners) {
+		for (ViewListener l : viewListeners) {
 			l.elevatorViewClosing();
 		}
 	}
 
 	private String fireGetElevatorFileNameEvent() {
 
-		return listeners.get(0).getElevatorFileName();
+		return viewListeners.get(0).getElevatorFileName();
 	}
 
 	private void setElevatorButtonListener(ToggleButton t, boolean b) {
@@ -145,7 +155,7 @@ public class MainView {
 
 			@Override
 			public void handle(ActionEvent event) {
-				//dont allow pressing button on current elevator floor 
+				//don't allow pressing button on current elevator floor 
 				if (elevatorImageView.yProperty().doubleValue() == toggleButtonsMap
 						.get(Integer.parseInt(t.getId())).getLayoutY()) {
 					t.setSelected(false);
@@ -154,7 +164,7 @@ public class MainView {
 
 				t.setDisable(true);
 				
-				//dont allow pressing button on current elevator floor 
+				//don't allow pressing button on current elevator floor 
 				boolean isSameFloor = fireUpChangeFloorEvent(Integer.parseInt(t.getId()));
 				if(isSameFloor)
 				{
@@ -169,7 +179,7 @@ public class MainView {
 	}
 
 	public void registerListener(ViewListener listener) {
-		listeners.add(listener);
+		viewListeners.add(listener);
 	}
 
 	//function handles initial elevator movement
@@ -209,11 +219,8 @@ public class MainView {
 									.layoutYProperty());
 					return;
 				}
-
 				final int diff = nextFloor - newCurFloor;
-
 				int nextElvatorMove = diff < 0 ? -1 : 1;
-
 				stopAtStationAndCallNext(isStop, nextElvatorMove, newCurFloor);
 
 			}
@@ -254,7 +261,7 @@ public class MainView {
 	}
 
 	private void fireUpdateStopEvent(int currentFloor) {
-		for(ViewListener l : listeners)
+		for(ViewListener l : viewListeners)
 		{
 			
 			l.updateFloorStop(currentFloor);
@@ -263,24 +270,24 @@ public class MainView {
 	}
 
 	private int fireGetNextFloorEvent(int upDown, int currentFloor) {
-		return listeners.get(0).getNextFloor(upDown, currentFloor);
+		return viewListeners.get(0).getNextFloor(upDown, currentFloor);
 	}
 
 	private boolean fireUpCurrentFloorUpdate(int newFloor) {
 		boolean a = false;
-		for (ViewListener l : listeners) {
+		for (ViewListener l : viewListeners) {
 			a = l.updateCurrentFloor(newFloor);
 		}
 		return a;
 	}
 
 	private int fireGetCurrentFloorEvent() {
-		return listeners.get(0).getCurrentFloor();
+		return viewListeners.get(0).getCurrentFloor();
 	}
 
 	private boolean fireUpChangeFloorEvent(int floorNum) {
 		boolean val = false;
-		for (ViewListener l : listeners) {
+		for (ViewListener l : viewListeners) {
 			val = l.changeFloor(floorNum);
 		}
 		return val;

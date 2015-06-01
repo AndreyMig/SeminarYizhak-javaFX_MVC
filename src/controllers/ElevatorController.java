@@ -2,22 +2,22 @@ package controllers;
 
 import javafx.scene.paint.Color;
 import model.ElevatorModel;
-import views.MainView;
+import views.ElevatorView;
 import views.SummaryView;
 
 public class ElevatorController implements ViewListener, ModelListener{
 
 	
-	private MainView mainView;
+	private ElevatorView elevatorView;
 	private ElevatorModel elevatorModel;
 	private SummaryView summaryView;
 	
-	public ElevatorController(MainView mainView, SummaryView summaryView, ElevatorModel elevatorModel) {
+	public ElevatorController(ElevatorView mainView, SummaryView summaryView, ElevatorModel elevatorModel) {
 		
-		this.mainView = mainView;
+		this.elevatorView = mainView;
 		this.elevatorModel = elevatorModel;
 		this.summaryView = summaryView;
-		this.mainView.registerListener(this);
+		this.elevatorView.registerListener(this);
 		this.elevatorModel.registerListener(this);
 		this.summaryView.registerListener(this);
 		
@@ -33,7 +33,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 
 	@Override
 	public void elevatorFileChanged(String newFileName) {
-		this.mainView.changeElevatorImage(newFileName);
+		this.elevatorView.changeElevatorImage(newFileName);
 		
 	}
 
@@ -54,7 +54,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 	public void changeElevatorImage(String file) {
 		System.out.println(file);
 		this.elevatorModel.changeElevatorImage(file);
-		this.mainView.changeElevatorImage(file);
+		this.elevatorView.changeElevatorImage(file);
 	}
 
 
@@ -81,7 +81,7 @@ public class ElevatorController implements ViewListener, ModelListener{
 
 	@Override
 	public void startElevatorMove(int floor) {
-		mainView.startElevatorMove(floor);
+		elevatorView.startElevatorMove(floor);
 	}
 
 

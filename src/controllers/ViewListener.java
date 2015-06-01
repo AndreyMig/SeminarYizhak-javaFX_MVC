@@ -1,7 +1,7 @@
 package controllers;
 
 import javafx.scene.paint.Color;
-import views.MainView;
+import views.ElevatorView;
 import model.ElevatorModel;
 
 public interface ViewListener {

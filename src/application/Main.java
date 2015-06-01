@@ -2,7 +2,7 @@ package application;
 	
 import controllers.ElevatorController;
 import model.ElevatorModel;
-import views.MainView;
+import views.ElevatorView;
 import views.SummaryView;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -29,7 +29,7 @@ public class Main extends Application {
 	public static ElevatorModel createNewElevetorPanel(SummaryView summView){
 		Stage s = new Stage();
 		ElevatorModel elevatorModel = new ElevatorModel();
-		MainView mainView = new MainView(s);
+		ElevatorView mainView = new ElevatorView(s);
 		ElevatorController ec = new ElevatorController(mainView, summView, elevatorModel);
 		mainView.createScene(s);
 		return elevatorModel;

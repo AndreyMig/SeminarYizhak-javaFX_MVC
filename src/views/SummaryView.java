@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,12 +28,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class SummaryView {
 
-	private static final double SCENE_WIDTH = 600;
+	private static final double SCENE_WIDTH = 700;
 	private static final double SCENE_HEIGHT = 400;
 	private final ObservableList<ElevatorModel> data = FXCollections
 			.observableArrayList();
@@ -56,6 +58,11 @@ public class SummaryView {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createScene(Stage stage) {
 
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+		stage.setX(primaryScreenBounds.getMinX());
+//		stage.setY(primaryScreenBounds.getMinY());
+		
+		
 		Group root = new Group();
 		HBox hb = new HBox(10);
 		VBox leftArea = new VBox();
@@ -63,7 +70,7 @@ public class SummaryView {
 		hb.setAlignment(Pos.CENTER);
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		stage.setScene(scene);
-
+		stage.setTitle("Elevators log");
 		// set button layout
 		Button createButton = new Button("Create");
 		createButton.prefWidthProperty().bind(stage.widthProperty().divide(10));

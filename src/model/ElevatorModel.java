@@ -34,11 +34,11 @@ public class ElevatorModel {
 	// Called from elevator button pressed
 	public boolean addFloor(int newFloor) {
 		
+		//ignore if same floor was sent as current
 		if (newFloor - currentFloor == 0)
 			return true;
 
-//		floorHistory.append(newFloor + ", ");
-
+		//check if this is the first floor added (elevator is not moving)
 		boolean b = false;
 		for (int i = 1; i < floors.length; i++) {
 			b |= getFloor(i);
@@ -52,7 +52,6 @@ public class ElevatorModel {
 			fireStartElevatorMoveEvent(newFloor);
 		} else {
 			setFloors(true, newFloor);
-			// floors[newFloor] = true;
 		}
 		return false;
 
